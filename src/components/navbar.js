@@ -1,5 +1,6 @@
 import React from "react";
-import { Nav, Logo, Ul, Li, A, Input } from "../styles/components/navbar";
+import { Nav, Logo, Ul, Li, A, Input } from "styles/components/navbar";
+// import { PieChartOutlined } from "@ant-design/icons";
 
 const Navbar = () => (
   <Nav>
@@ -15,7 +16,6 @@ const Navbar = () => (
         <A href="">Contact</A>
       </Li>
     </Ul>
-
     <Input type="text" placeholder="Google Search" />
   </Nav>
 );

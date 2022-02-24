@@ -1,10 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import { useNavigate } from "react-router-dom";
-
 import * as yup from "yup";
+import axios from "axios";
 import {
   Main,
   FormContainer,
@@ -12,6 +11,7 @@ import {
   Input,
   Button,
   Head,
+  Para,
 } from "../styles/pages/login";
 
 const schema = yup
@@ -39,23 +39,38 @@ const Login = () => {
     resolver: yupResolver(schema),
   });
 
-  let navigate = useNavigate();
-  navigate("/dashboard");
+  const navigate = useNavigate();
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    axios
+      .post("https://reqres.in/api/login", {
+        // email: data.email,
+        // password: data.password,
+        email: "eve.holt@reqres.in",
+        password: "cityslicka",
+      })
+      .then(function (response) {
+        navigate("/dashboard");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  // const onSubmit = (data) => console.log(data);
   return (
     <Main>
       <FormContainer>
         <Head>Login your account</Head>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Input type="text" {...register("email")} placeholder="Email" />
-          <p>{errors.email?.message}</p>
+          <Para>{errors.email?.message}</Para>
           <Input
             type="password"
             {...register("password")}
             placeholder="Password"
           />
-          <p>{errors.password?.message}</p>
+          <Para>{errors.password?.message}</Para>
           <Button type="submit">Login</Button>
         </Form>
       </FormContainer>

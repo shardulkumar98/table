@@ -1,7 +1,7 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./pages/login";
-import Dashboard from "./pages/dashboard";
+import Login from "pages/login";
+import Dashboard from "pages/dashboard";
 import "antd/dist/antd.css";
 
 function App() {

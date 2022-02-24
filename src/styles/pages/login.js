@@ -26,11 +26,15 @@ export const Head = styled.p`
   font-size: 2.3rem;
 `;
 
+export const Para = styled.p`
+  color: #84dfff;
+`;
+
 export const Input = styled.input`
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   background: #313552;
   width: 400px;
-  height: 25px;
+  height: 28px;
   margin: 5px;
   border-top: none;
   border-left: none;
