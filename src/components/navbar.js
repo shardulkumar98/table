@@ -1,6 +1,5 @@
 import React from "react";
 import { Nav, Logo, Ul, Li, A, Input } from "styles/components/navbar";
-// import { PieChartOutlined } from "@ant-design/icons";
 
 const Navbar = () => (
   <Nav>
