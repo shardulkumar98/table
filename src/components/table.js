@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { Table, Divider, Modal, Button } from "antd";
+import { Table, Divider } from "antd";
 import Axios from "axios";
-import { useForm } from "react-hook-form";
-import { Form, Input, FormButton } from "styles/components/modal";
+import Modal from "components/modal/index.js";
 
 const DataTable = () => {
   const [state, setstate] = useState([]);
   const [loading, setloading] = useState(true);
-  const [modal, setModal] = useState();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   useEffect(() => {
     getData();
   }, []);
 
+  // const onEdit = (index) => {
+  //   setShowModal(true);
+  //   console.log(index);
+  // };
+
+  const onDelete = (index) => {
+    console.log("You Deleted this row from the table", index);
+    setstate(state.filter((i) => index !== i));
+  };
+
   const getData = async () => {
     await Axios.get("https://fakestoreapi.com/products").then((res) => {
-      // console.log(res.data);
       setloading(false);
       setstate(
         res.data.map((row) => ({
@@ -29,56 +38,16 @@ const DataTable = () => {
     });
   };
 
-  const onDelete = () => {
-    console.log();
+  const showModal = () => {
+    setIsModalVisible(true);
   };
 
-  // Modal Start Here
-  const ModalForm = () => {
-    const {
-      register,
-      handleSubmit,
-      formState: { errors },
-    } = useForm();
-    const formData = (data) => console.log(data);
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
 
-    const [isModalVisible, setIsModalVisible] = useState(false);
-
-    const showModal = () => {
-      setIsModalVisible(true);
-    };
-
-    const handleOk = () => {
-      setIsModalVisible(false);
-    };
-
-    const handleCancel = () => {
-      setIsModalVisible(false);
-    };
-
-    return (
-      <>
-        <Button type="primary" onClick={showModal}>
-          Edit
-        </Button>
-        <Modal
-          title="Edit"
-          visible={isModalVisible}
-          onOk={handleOk}
-          onCancel={handleCancel}
-        >
-          <Form formData={handleSubmit(formData)}>
-            <Input placeholder="Title" {...register("title")} />
-            <Input placeholder="Price" {...register("price")} />
-            <Input placeholder="Description" {...register("description")} />
-            <Input placeholder="Category" {...register("category")} />
-            {errors.exampleRequired && <span>This field is required</span>}
-
-            <FormButton type="submit">Save</FormButton>
-          </Form>
-        </Modal>
-      </>
-    );
+  const handleCancel = () => {
+    setIsModalVisible(false);
   };
 
   // Columns Start Here
@@ -111,14 +80,20 @@ const DataTable = () => {
     {
       title: "Action",
       key: "action",
-      dataIndex: "id",
-      render: (id) => (
-        <span>
-          {/* <a>Edit {record.name}</a> */}
-          <a href="#">Edit</a>
+      dataIndex: "action",
+      render: (text, record, index) => (
+        <span size="middle">
+          <a>
+            {/* <button type="primary" onClick={() => showModal(showModal)}> */}
+            <button type="primary" onClick={showModal}>
+              Edit
+            </button>
+
+            {/* </button> */}
+          </a>
           <Divider type="vertical" />
-          <a href="#" onClick={onDelete}>
-            Delete
+          <a>
+            <button onClick={() => onDelete(record)}>Delete</button>
           </a>
         </span>
       ),
@@ -126,7 +101,15 @@ const DataTable = () => {
   ];
 
   return (
-    <>{loading ? "Loading" : <Table columns={columns} dataSource={state} />}</>
+    <>
+      <Modal
+        title="Edit"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      />
+      {loading ? "Loading" : <Table columns={columns} dataSource={state} />}
+    </>
   );
 };
 
