@@ -1,56 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Table, Divider } from "antd";
 import Axios from "axios";
-import Modal from "components/modal/index.js";
+import EditModal from "components/modal";
+import { Button, Span } from "styles/components/table";
 
 const DataTable = () => {
   const [state, setstate] = useState([]);
   const [loading, setloading] = useState(true);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modal, setModal] = useState(false);
 
-  useEffect(() => {
-    getData();
-  }, []);
+  const [data, setData] = useState(null);
 
-  // const onEdit = (index) => {
-  //   setShowModal(true);
-  //   console.log(index);
-  // };
-
-  const onDelete = (index) => {
-    console.log("You Deleted this row from the table", index);
-    setstate(state.filter((i) => index !== i));
-  };
-
-  const getData = async () => {
-    await Axios.get("https://fakestoreapi.com/products").then((res) => {
-      setloading(false);
-      setstate(
-        res.data.map((row) => ({
-          id: row.id,
-          title: row.title,
-          price: row.price,
-          description: row.description,
-          category: row.category,
-          action: row.action,
-        }))
-      );
-    });
-  };
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  // Columns Start Here
   const columns = [
     {
       title: "Id",
@@ -82,33 +42,71 @@ const DataTable = () => {
       key: "action",
       dataIndex: "action",
       render: (text, record, index) => (
-        <span size="middle">
+        <Span size="middle">
           <a>
-            {/* <button type="primary" onClick={() => showModal(showModal)}> */}
-            <button type="primary" onClick={showModal}>
+            <Button
+              type="primary"
+              onClick={() => {
+                setData(record);
+                setModal(true);
+              }}
+            >
               Edit
-            </button>
+            </Button>
 
             {/* </button> */}
           </a>
           <Divider type="vertical" />
           <a>
-            <button onClick={() => onDelete(record)}>Delete</button>
+            <Button onClick={() => onDelete(record)}>Delete</Button>
           </a>
-        </span>
+        </Span>
       ),
     },
   ];
 
+  const handleCancel = () => {
+    setModal(false);
+  };
+
+  const handleOnOk = () => {
+    setModal(false);
+  };
+
+  const onDelete = (index) => setstate(state.filter((i) => index !== i)); //Delete Fumction
+
+  const getData = async () => {
+    await Axios.get("https://fakestoreapi.com/products").then((res) => {
+      setloading(false);
+      setstate(
+        res.data.map((row) => ({
+          id: row.id,
+          title: row.title,
+          price: row.price,
+          description: row.description,
+          category: row.category,
+          action: row.action,
+        }))
+      );
+    });
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <>
-      <Modal
-        title="Edit"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      />
       {loading ? "Loading" : <Table columns={columns} dataSource={state} />}
+      {modal && (
+        <EditModal
+          title="Edit"
+          isOpen={modal}
+          onCancel={handleCancel}
+          onOk={handleOnOk}
+          data={data}
+        />
+      )}
     </>
   );
 };

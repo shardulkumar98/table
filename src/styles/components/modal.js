@@ -17,4 +17,5 @@ export const FormButton = styled.button`
   width: 80px;
   height: 30px;
   color: black;
+  border: none;
 `;
